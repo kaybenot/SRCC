@@ -17,6 +17,9 @@ public class Car : MonoBehaviour
     [SerializeField] private float suspensionHeight = 0.5f;
     [SerializeField] private float suspensionSpringStrength = 100f;
     [SerializeField] private float suspensionDamping = 10f;
+    [SerializeField] private float acceleration = 10f;
+    [SerializeField] private float wheelRorationSpeed = 180f;
+    [SerializeField, Range(0f, 1f)] private float carSideSlideReduction = 0.8f;
     [SerializeField] private LayerMask layerMask;
 
     private Rigidbody rb;
@@ -50,6 +53,11 @@ public class Car : MonoBehaviour
         UpdateSuspension(suspensionFR);
         UpdateSuspension(suspensionRL);
         UpdateSuspension(suspensionRR);
+        
+        HandleSteeringWheelAcceleration(suspensionFL);
+        HandleSteeringWheelAcceleration(suspensionFR);
+        HandleWheelAcceleration(suspensionRL);
+        HandleWheelAcceleration(suspensionRR);
     }
 
     public void Steering(InputAction.CallbackContext context)
@@ -66,6 +74,7 @@ public class Car : MonoBehaviour
     
     private void UpdateSuspension(Transform suspension)
     {
+        var wheel = suspension.GetChild(0);
         if (Physics.Raycast(suspension.position, -suspension.up, out var hit, suspensionHeight, layerMask))
         {
             var springDir = suspension.up;
@@ -75,8 +84,7 @@ public class Car : MonoBehaviour
             var force = (offset * suspensionSpringStrength) - (vel * suspensionDamping);
             
             rb.AddForceAtPosition(springDir * force, suspension.position);
-
-            var wheel = suspension.GetChild(0);
+            
             var wheelPosition = hit.point + suspension.up * wheelBounds.extents.y;
             if (Vector3.Distance(wheelPosition, suspension.position) > suspensionHeight)
             {
@@ -86,10 +94,11 @@ public class Car : MonoBehaviour
         }
         else
         {
-            var wheel = suspension.GetChild(0);
             var wheelPosition = suspension.position - suspension.up * suspensionHeight + suspension.up * wheelBounds.extents.y;
             wheel.position = wheelPosition;
         }
+
+        wheel.rotation = suspension.rotation;
     }
 
     private Transform SpawnWheel(Transform suspension)
@@ -118,5 +127,29 @@ public class Car : MonoBehaviour
         DrawGizmoWheelSpeed(suspensionFR);
         DrawGizmoWheelSpeed(suspensionRL);
         DrawGizmoWheelSpeed(suspensionRR);
+    }
+
+    private void HandleSteeringWheelAcceleration(Transform suspension)
+    {
+        suspension.localRotation = Quaternion.RotateTowards(suspension.localRotation, Quaternion.Euler(0f, 60f * steeringInput.x, 0f), Time.fixedDeltaTime * wheelRorationSpeed);
+
+        if (Physics.Raycast(suspension.position, -suspension.up, out var hit, suspensionHeight, layerMask))
+        {
+            rb.AddForceAtPosition(suspension.right * acceleration * steeringInput.y * Time.fixedDeltaTime,
+                suspension.position, ForceMode.VelocityChange);
+        }
+
+        HandleWheelAcceleration(suspension);
+    }
+    
+    private void HandleWheelAcceleration(Transform suspension)
+    {
+        if (Physics.Raycast(suspension.position, -suspension.up, out var hit, suspensionHeight, layerMask))
+        {
+            var vel = rb.GetPointVelocity(suspension.position);
+            var velRight = Vector3.Dot(vel, suspension.forward);
+            rb.AddForceAtPosition(-velRight * carSideSlideReduction * suspension.forward * Time.fixedDeltaTime,
+                suspension.position, ForceMode.VelocityChange);
+        }
     }
 }

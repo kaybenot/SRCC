@@ -3095,7 +3095,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.013689169, y: 0.7537782, z: 0.015710449, w: 0.65679836}
+  m_LocalRotation: {x: -0.013689173, y: 0.7537782, z: 0.015710449, w: 0.65679854}
   m_LocalPosition: {x: 0.99765635, y: 2.88, z: -4.772994}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4052,7 +4052,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 932385985}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.013689172, y: 0.7537783, z: 0.01571045, w: 0.6567984}
+  m_LocalRotation: {x: -0.013689173, y: 0.7537782, z: 0.01571045, w: 0.6567985}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5123,6 +5123,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1165528686}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2040435400 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2414336659503423618, guid: aa457a3381618774a8808164c0dc8141,
+    type: 3}
+  m_PrefabInstance: {fileID: 1165528686}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2040435399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 672933ce1489ecb4081ac0e3fe2bf3fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2040435405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5150,7 +5162,19 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2040435400}
+        m_TargetAssemblyTypeName: Car, Assembly-CSharp
+        m_MethodName: Steering
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 4c67b7d4-9221-4ead-9c87-af756277a175
     m_ActionName: Movement/Steering[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
   m_NeverAutoSwitchControlSchemes: 0
