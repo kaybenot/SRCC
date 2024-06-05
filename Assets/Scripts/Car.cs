@@ -21,6 +21,7 @@ public class Car : MonoBehaviour
     [SerializeField] private float wheelRorationSpeed = 180f;
     [SerializeField, Range(0f, 1f)] private float carSideSlideReduction = 0.8f;
     [SerializeField] private LayerMask layerMask;
+    [SerializeField] private AnimationCurve engineTorqueCurve;
 
     private Rigidbody rb;
     private Transform wheelFL;
@@ -135,8 +136,10 @@ public class Car : MonoBehaviour
 
         if (Physics.Raycast(suspension.position, -suspension.up, out var hit, suspensionHeight, layerMask))
         {
-            rb.AddForceAtPosition(suspension.right * acceleration * steeringInput.y * Time.fixedDeltaTime,
-                suspension.position, ForceMode.VelocityChange);
+            var vel = rb.GetPointVelocity(suspension.position);
+            var velForward = Vector3.Dot(vel, suspension.right);
+            var torque = engineTorqueCurve.Evaluate(Mathf.Abs(velForward)) * acceleration * steeringInput.y;
+            rb.AddForceAtPosition(suspension.right * torque * Time.fixedDeltaTime, suspension.position, ForceMode.VelocityChange);
         }
 
         HandleWheelAcceleration(suspension);
